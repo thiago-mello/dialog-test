@@ -23,10 +23,10 @@ func (e *ExistsUserByEmailHttpAdapter) Query(ctx echo.Context) error {
 		return errs.BadRequestError("email is required")
 	}
 
-	exists, err := e.persistence.ExistsByEmail(ctx.Request().Context(), email)
+	user, err := e.persistence.FindByEmail(ctx.Request().Context(), email)
 	if err != nil {
 		return err
 	}
 
-	return ctx.JSON(http.StatusOK, map[string]bool{"exists": exists})
+	return ctx.JSON(http.StatusOK, map[string]bool{"exists": user != nil})
 }

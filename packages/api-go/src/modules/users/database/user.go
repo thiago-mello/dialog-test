@@ -3,6 +3,8 @@ package database
 import (
 	"context"
 
+	goSql "database/sql"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/leandro-andrade-candido/api-go/src/libs/sql"
 	"github.com/leandro-andrade-candido/api-go/src/libs/utils"
@@ -15,7 +17,7 @@ func NewUsersDatabaseOutputPort(db *sqlx.DB) UsersDatabaseOutputPort {
 
 type UsersDatabaseOutputPort interface {
 	Insert(ctx context.Context, tx *sqlx.Tx, user *domain.User) (bool, error)
-	ExistsByEmail(ctx context.Context, email string) (bool, error)
+	FindByEmail(ctx context.Context, email string) (*domain.User, error)
 }
 
 type UsersDatabaseOutputAdapter struct {
@@ -48,20 +50,23 @@ func (u *UsersDatabaseOutputAdapter) Insert(ctx context.Context, tx *sqlx.Tx, us
 	return false, nil
 }
 
-func (u *UsersDatabaseOutputAdapter) ExistsByEmail(ctx context.Context, email string) (bool, error) {
-	sqlString, err := sql.GetSql("user.ExistsByEmail", nil)
+func (u *UsersDatabaseOutputAdapter) FindByEmail(ctx context.Context, email string) (*domain.User, error) {
+	sqlString, err := sql.GetSql("user.FindByEmail", nil)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
-	rows, err := u.db.NamedQueryContext(ctx, sqlString, map[string]interface{}{"email": email})
-	if rows.Err() != nil {
-		return false, nil
+	user := domain.User{}
+
+	sqlString, args, err := utils.TranslateNamedQuery(sqlString, map[string]interface{}{"email": email})
+
+	err = u.db.GetContext(ctx, &user, sqlString, args...)
+	if err == goSql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
 	}
 
-	if rows.Next() {
-		return true, nil
-	}
-
-	return false, nil
+	return &user, nil
 }
