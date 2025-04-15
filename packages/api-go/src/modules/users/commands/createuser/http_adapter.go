@@ -16,7 +16,7 @@ func NewCreateUserAdapter(db *sqlx.DB) *CreateUserHttpAdapter {
 	return &CreateUserHttpAdapter{useCase: NewUseCase(db)}
 }
 
-func (c *CreateUserHttpAdapter) HandleCreateUserRequest(ctx echo.Context) error {
+func (c *CreateUserHttpAdapter) Handle(ctx echo.Context) error {
 	body := &dto.CreateUserDto{}
 
 	err := ctx.Bind(&body)

@@ -49,7 +49,7 @@ func (u *UsersDatabaseOutputAdapter) Insert(ctx context.Context, tx *sqlx.Tx, us
 }
 
 func (u *UsersDatabaseOutputAdapter) ExistsByEmail(ctx context.Context, email string) (bool, error) {
-	sqlString, err := sql.GetSql("users.ExistsByEmail", nil)
+	sqlString, err := sql.GetSql("user.ExistsByEmail", nil)
 	if err != nil {
 		return false, err
 	}
