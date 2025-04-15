@@ -18,5 +18,5 @@ export const sessionOptions: SessionOptions = {
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
   },
-  ttl: 4200,
+  ttl: 14400,
 };

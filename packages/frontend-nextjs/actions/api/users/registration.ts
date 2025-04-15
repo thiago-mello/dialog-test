@@ -1,14 +1,26 @@
 "use server";
 
-import { API_REGISTER_USER_URL, API_USER_EXISTS_URL } from "@/constants/api";
+import {
+  API_MY_USER_URL,
+  API_REGISTER_USER_URL,
+  API_USER_EXISTS_URL,
+} from "@/constants/api";
 import { getUrlQueryStringFromParams } from "@/utils/url";
+import { getRequest, putRequest } from "../base";
 
 export interface User {
   name: string;
   email: string;
   bio?: string;
-  password: string;
-  password_confirm: string;
+  password?: string;
+  password_confirm?: string;
+}
+
+export interface UserPublicData {
+  id: string;
+  name: string;
+  email: string;
+  bio?: string;
 }
 
 /**
@@ -59,4 +71,36 @@ export async function isEmailAvaliable(email: string): Promise<Boolean> {
 
   const body = await response.json();
   return !body.exists;
+}
+
+/**
+ * Retrieves the currently authenticated user's public data
+ * @returns Promise that resolves to the user's public data (id, name, email, bio) if authenticated,
+ *          or undefined if not authenticated or request fails
+ */
+export async function getMyUser(): Promise<UserPublicData | undefined> {
+  const response = await getRequest<UserPublicData>(API_MY_USER_URL);
+  if (response.status === 404) {
+    return;
+  }
+
+  return response.body;
+}
+
+/**
+ * Updates the currently authenticated user's information
+ * @param user - User object containing updated user data (name, email, bio, password)
+ * @returns Promise that resolves to an error object if update fails, or undefined on success
+ */
+export async function updateMyUser(
+  user: User
+): Promise<{ error: string } | undefined> {
+  const response = await putRequest<any>(API_MY_USER_URL, user);
+  if (response.status === 404) {
+    return response.body?.message
+      ? { error: response.body.message }
+      : undefined;
+  }
+
+  return;
 }

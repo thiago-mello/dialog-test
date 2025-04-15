@@ -206,7 +206,7 @@ export default function RegistrationForm() {
         />
 
         <div className="flex flex-row justify-end">
-          <Button variant="secondary" asChild>
+          <Button type="reset" variant="secondary" asChild>
             <Link href="/">Voltar</Link>
           </Button>
           <Button

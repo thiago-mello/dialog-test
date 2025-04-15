@@ -7,13 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  BookOpenCheck,
-  FileSpreadsheet,
-  LogOut,
-  ThumbsUp,
-  UserPen,
-} from "lucide-react";
+import { LogOut, ThumbsUp, UserPen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
