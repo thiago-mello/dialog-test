@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/leandro-andrade-candido/api-go/src/config"
 	"github.com/leandro-andrade-candido/api-go/src/config/server"
+	"github.com/leandro-andrade-candido/api-go/src/routes"
 )
 
 func main() {
@@ -16,6 +17,8 @@ func main() {
 	}
 
 	e := server.GetServer()
+	routes.SetupRoutes(e)
+
 	e.GET("/", func(c echo.Context) error {
 		return c.String(200, "Hello, World!")
 	})

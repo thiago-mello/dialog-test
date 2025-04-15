@@ -15,13 +15,15 @@ type ErrorResponse struct {
 // It checks if the response is already committed and processes different error types accordingly.
 func ErrorHandler() echo.HTTPErrorHandler {
 	return func(err error, c echo.Context) {
-		if c.Response().Committed || err != nil {
+		if c.Response().Committed {
 			return
 		}
 
 		switch e := err.(type) {
 		case ApiError:
 			handleApiError(e, c)
+		case *echo.HTTPError:
+			handleHttpError(e, c)
 		default:
 			handleUnknownError(e, c)
 		}
@@ -43,6 +45,31 @@ func handleApiError(err ApiError, c echo.Context) {
 	}
 
 	c.JSON(err.StatusCode, ErrorResponse{
+		Message: message,
+		Details: details,
+	})
+}
+
+// handleHttpError processes HTTP-specific errors by logging a warning and returning a JSON response.
+// If the error message is not a string, it uses the standard HTTP status text.
+// If debug mode is enabled, it includes the full error details in the response.
+// Parameters:
+//   - err: The HTTP error that occurred
+//   - c: The echo.Context for the request
+func handleHttpError(err *echo.HTTPError, c echo.Context) {
+	c.Logger().Warn(err.Error())
+
+	message, ok := err.Message.(string)
+	if !ok {
+		message = http.StatusText(err.Code)
+	}
+
+	var details string
+	if c.Echo().Debug {
+		details = err.Error()
+	}
+
+	c.JSON(err.Code, ErrorResponse{
 		Message: message,
 		Details: details,
 	})
