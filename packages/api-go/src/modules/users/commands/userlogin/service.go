@@ -51,8 +51,12 @@ func (u *UserLoginService) LoginUser(ctx context.Context, command UserLoginComma
 	}
 
 	return &dto.LoginResponseDto{
-		UserId:      user.ID,
 		AccessToken: tokenString,
+		User: dto.UserResponseDto{
+			Id:    user.ID,
+			Email: user.Email,
+			Name:  user.Name,
+		},
 	}, nil
 }
 

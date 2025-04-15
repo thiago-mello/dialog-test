@@ -8,6 +8,7 @@ import (
 	"github.com/leandro-andrade-candido/api-go/src/modules/users/commands/updateuser"
 	"github.com/leandro-andrade-candido/api-go/src/modules/users/commands/userlogin"
 	"github.com/leandro-andrade-candido/api-go/src/modules/users/queries/existsemail"
+	"github.com/leandro-andrade-candido/api-go/src/modules/users/queries/getmyuser"
 )
 
 func ConfigUserRoutes(router *echo.Echo) {
@@ -16,7 +17,10 @@ func ConfigUserRoutes(router *echo.Echo) {
 	routeGroup.POST("", createUser().Handle)
 	routeGroup.GET("/exists", existsUser().Query)
 	routeGroup.POST("/login", login().Handle)
-	routeGroup.PUT("/me", updateUser().Handle, middlewares.RequireJWTAuth()) // protected user route
+
+	// protected user routes
+	routeGroup.PUT("/me", updateUser().Handle, middlewares.RequireJWTAuth())
+	routeGroup.GET("/me", getMyUser().Query, middlewares.RequireJWTAuth())
 }
 
 func createUser() *createuser.CreateUserHttpAdapter {
@@ -29,6 +33,10 @@ func existsUser() *existsemail.ExistsUserByEmailHttpAdapter {
 
 func updateUser() *updateuser.UpdateCurrentUserHttpAdapter {
 	return updateuser.NewUpdateUserAdapter(config.GetDb())
+}
+
+func getMyUser() *getmyuser.GetMyUserHttpAdapter {
+	return getmyuser.NewGetMyUserAdapter(config.GetDb())
 }
 
 func login() *userlogin.UserLoginHttpAdapter {

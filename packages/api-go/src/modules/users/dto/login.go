@@ -8,6 +8,12 @@ type LoginRequestDto struct {
 }
 
 type LoginResponseDto struct {
-	UserId      uuid.UUID `json:"user_id"`
-	AccessToken string    `json:"access_token"`
+	AccessToken string          `json:"access_token"`
+	User        UserResponseDto `json:"user"`
+}
+
+type UserResponseDto struct {
+	Id    uuid.UUID `json:"id"`
+	Email string    `json:"email"`
+	Name  string    `json:"name"`
 }
