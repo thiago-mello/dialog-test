@@ -17,14 +17,13 @@ type CreateUserUseCase interface {
 }
 
 type CreateUserService struct {
-	db          *sqlx.DB
 	persistence database.UsersDatabaseOutputPort
 }
 
 func NewUseCase(db *sqlx.DB) CreateUserUseCase {
 	persistence := database.NewUsersDatabaseOutputPort(db)
 
-	return &CreateUserService{db: db, persistence: persistence}
+	return &CreateUserService{persistence: persistence}
 }
 
 func (c *CreateUserService) CreateNewUser(ctx context.Context, command CreateUserCommand) error {
@@ -41,11 +40,8 @@ func (c *CreateUserService) CreateNewUser(ctx context.Context, command CreateUse
 	if userExists {
 		return errs.BadRequestError("The email requested is not available")
 	}
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return err
 }
 
 func mapCommandToDomain(command CreateUserCommand) (*domain.User, error) {

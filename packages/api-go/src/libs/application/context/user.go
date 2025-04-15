@@ -1,6 +1,8 @@
 package context
 
+import "github.com/google/uuid"
+
 type UserClaims struct {
-	Email string `json:"email"`
-	Id    uint32 `json:"id"`
+	Email string    `json:"email"`
+	Id    uuid.UUID `json:"id"`
 }
