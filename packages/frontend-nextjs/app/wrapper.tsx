@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import React, { JSX } from "react";
 import { SessionData, sessionOptions } from "@/lib/session";
 import { QueryClientWrapper } from "@/providers/query";
+import { Toaster } from "@/components/ui/toaster";
 
 /**
  * A wrapper component that provides the application's layout structure
@@ -46,6 +47,7 @@ export default async function AppWrapper({
             {children}
           </div>
         </main>
+        <Toaster />
       </SidebarProvider>
     </QueryClientWrapper>
   );
