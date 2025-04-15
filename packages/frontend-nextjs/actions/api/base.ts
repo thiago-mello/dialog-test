@@ -51,6 +51,24 @@ export async function putRequest<T>(
 }
 
 /**
+ * Makes a POST request to the specified path with a request body
+ * @param path - The URL path to make the request to
+ * @param body - The request body to send
+ * @returns Promise resolving to the response data
+ */
+export async function postRequest<T>(
+  path: string,
+  body: any
+): Promise<ApiResponse<T>> {
+  const session = await getSession();
+
+  const options = getRequestOptions("POST", body, session);
+  const response = await fetch(path, options);
+
+  return await manageResponse(response);
+}
+
+/**
  * Generates request options for fetch API calls
  * @param method - The HTTP method to use
  * @param body - Optional request body
