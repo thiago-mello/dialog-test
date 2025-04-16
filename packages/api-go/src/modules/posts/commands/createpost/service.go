@@ -33,8 +33,13 @@ func NewUseCase(db *sqlx.DB) CreatePostUseCase {
 //   - *domain.Post: The created post if successful
 //   - error: BadRequestError if validation fails or any other error during save
 func (c *CreatePostService) CreatePost(ctx context.Context, command CreatePostCommand) (*domain.Post, error) {
+	id, err := uuid.NewV7()
+	if err != nil {
+		return nil, err
+	}
+
 	post := &domain.Post{
-		ID:       uuid.New(),
+		ID:       id,
 		UserID:   command.UserID,
 		Content:  command.Content,
 		IsPublic: command.IsPublic,
