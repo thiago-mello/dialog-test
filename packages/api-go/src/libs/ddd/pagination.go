@@ -2,7 +2,7 @@ package ddd
 
 type PaginatedQuery struct {
 	PageSize   int32  `query:"page_size" validate:"omitempty,min=1"`
-	LastSeenId string `query:"id" validate:"omitempty,min=1,uuid"`
+	LastSeenId string `query:"last_seen_id" validate:"omitempty,min=1,uuid"`
 }
 
 func (p PaginatedQuery) GetPageSize() int32 {

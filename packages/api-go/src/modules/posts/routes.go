@@ -7,6 +7,8 @@ import (
 	"github.com/leandro-andrade-candido/api-go/src/modules/posts/commands/createpost"
 	"github.com/leandro-andrade-candido/api-go/src/modules/posts/commands/updatepost"
 	"github.com/leandro-andrade-candido/api-go/src/modules/posts/queries/getpost"
+	"github.com/leandro-andrade-candido/api-go/src/modules/posts/queries/listmyposts"
+	"github.com/leandro-andrade-candido/api-go/src/modules/posts/queries/listposts"
 )
 
 func ConfigPostRoutes(router *echo.Echo) {
@@ -16,6 +18,8 @@ func ConfigPostRoutes(router *echo.Echo) {
 	routeGroup.POST("", createPost().Handle)
 	routeGroup.PUT("/:id", updatePost().Handle)
 	routeGroup.GET("/:id", getPost().Query)
+	routeGroup.GET("", listPosts().Query)
+	routeGroup.GET("/my-posts", listMyPosts().Query)
 }
 
 func createPost() *createpost.CreatePostHttpAdapter {
@@ -28,4 +32,12 @@ func updatePost() *updatepost.UpdatePostHttpAdapter {
 
 func getPost() *getpost.GetPostHttpAdapter {
 	return getpost.NewGetPostAdapter(config.GetDb())
+}
+
+func listPosts() *listposts.ListPostsHttpAdapter {
+	return listposts.NewListPostAdapter(config.GetDb())
+}
+
+func listMyPosts() *listmyposts.ListMyPostsHttpAdapter {
+	return listmyposts.NewListMyPostAdapter(config.GetDb())
 }

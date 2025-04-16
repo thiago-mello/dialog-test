@@ -9,6 +9,8 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/leandro-andrade-candido/api-go/src/libs/sql"
 	"github.com/leandro-andrade-candido/api-go/src/libs/utils"
+	"github.com/leandro-andrade-candido/api-go/src/modules/posts/database/params"
+	"github.com/leandro-andrade-candido/api-go/src/modules/posts/database/projections"
 	"github.com/leandro-andrade-candido/api-go/src/modules/posts/domain"
 )
 
@@ -24,6 +26,7 @@ type PostsDatabaseOutputPort interface {
 	Save(ctx context.Context, tx *sqlx.Tx, post *domain.Post) error
 	FindByID(ctx context.Context, id uuid.UUID) (*domain.Post, error)
 	Update(ctx context.Context, tx *sqlx.Tx, post *domain.Post) error
+	ListPosts(ctx context.Context, filters params.GetPostsParams) ([]*projections.ListPostsProjection, error)
 }
 
 // Save persists a post entity to the database
@@ -100,4 +103,21 @@ func (p *PostsDatabaseOutputAdapter) Update(ctx context.Context, tx *sqlx.Tx, po
 		return dbTx.Commit()
 	}
 	return nil
+}
+
+func (p *PostsDatabaseOutputAdapter) ListPosts(ctx context.Context, filters params.GetPostsParams) ([]*projections.ListPostsProjection, error) {
+	sqlString, err := sql.GetSql("post.ListPosts", filters)
+	if err != nil {
+		return nil, err
+	}
+	posts := []*projections.ListPostsProjection{}
+	query, args, err := utils.TranslateNamedQuery(sqlString, filters)
+	if err != nil {
+		return nil, err
+	}
+	err = p.db.SelectContext(ctx, &posts, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	return posts, nil
 }
