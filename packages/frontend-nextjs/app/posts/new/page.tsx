@@ -1,5 +1,4 @@
 import NewPostForm from "./components/post-form";
-import RichTextEditor from "./components/text-editor";
 
 export default async function NewPostPage() {
   return (

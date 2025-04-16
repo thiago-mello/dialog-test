@@ -17,13 +17,12 @@ import {
 } from "lucide-react";
 import { Level } from "@tiptap/extension-heading";
 
-const RichTextEditor = ({
-  onChange,
-  initialContent,
-}: {
-  onChange: (value: string) => any;
+interface EditorProps {
+  onChange: (value: string) => void;
   initialContent?: string;
-}) => {
+}
+
+const RichTextEditor = ({ onChange, initialContent }: EditorProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({

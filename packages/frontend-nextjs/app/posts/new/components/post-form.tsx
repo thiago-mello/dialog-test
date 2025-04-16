@@ -3,7 +3,7 @@
 "use client";
 
 import { useState } from "react";
-import RichTextEditor from "./text-editor";
+import RichTextEditor from "../../components/text-editor";
 import { Post, saveNewPost } from "@/actions/api/posts/posts";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
