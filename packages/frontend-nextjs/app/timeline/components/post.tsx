@@ -10,17 +10,43 @@ import {
 } from "@/components/ui/hover-card";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
-import { PostProjection } from "@/actions/api/posts/posts";
+import { Edit, Heart, Trash2 } from "lucide-react";
+import { deletePost, PostProjection } from "@/actions/api/posts/posts";
 import { likePost } from "@/actions/api/posts/likes";
+import Link from "next/link";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+  AlertDialogAction,
+  AlertDialogDescription,
+} from "@/components/ui/alert-dialog";
 
 async function toggleLike(postId: string, isLiked: boolean): Promise<void> {
   await likePost(postId, !isLiked);
 }
 
-export function PostItem({ post: initialPost }: { post: PostProjection }) {
+interface PostItemProps {
+  post: PostProjection;
+  currentUserId?: string;
+  onPostDeleted?: (postId: string) => void;
+}
+
+export function PostItem({
+  post: initialPost,
+  currentUserId,
+  onPostDeleted,
+}: PostItemProps) {
   const [post, setPost] = useState(initialPost);
   const [isLiking, setIsLiking] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const isOwnPost = currentUserId && post.user.id === currentUserId;
+  const postWasUpdated = post.created_at !== post.updated_at;
 
   const formattedDate = formatDistanceToNow(new Date(post.updated_at), {
     addSuffix: true,
@@ -51,10 +77,24 @@ export function PostItem({ post: initialPost }: { post: PostProjection }) {
     }
   };
 
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await deletePost(post.id);
+      if (onPostDeleted) {
+        onPostDeleted(post.id);
+      }
+    } catch (error) {
+      console.error("Erro ao excluir o post:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <Card className="mb-4">
-      <CardContent className="pt-6 post-content">
-        <div className="flex justify-between items-start mb-3">
+      <CardContent className="pt-6">
+        <div className="flex justify-between items-start mb-1">
           <div className="flex items-center">
             <HoverCard>
               <HoverCardTrigger asChild>
@@ -70,13 +110,54 @@ export function PostItem({ post: initialPost }: { post: PostProjection }) {
               </HoverCardContent>
             </HoverCard>
           </div>
-          <span className="text-xs text-gray-500">
-            Atualizado {formattedDate}
-          </span>
+
+          <div className="flex items-center gap-2">
+            {isOwnPost && (
+              <>
+                <Link href={`/posts/${post.id}`} passHref>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Edit size={16} className="text-gray-500" />
+                    <span className="sr-only">Editar</span>
+                  </Button>
+                </Link>
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Trash2 size={16} className="text-gray-500" />
+                      <span className="sr-only">Excluir</span>
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Excluir post</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Tem certeza que deseja excluir este post? Esta ação não
+                        pode ser desfeita.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDelete}
+                        disabled={isDeleting}
+                      >
+                        {isDeleting ? "Excluindo..." : "Excluir"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="text-xs text-gray-500 mb-3">
+          {`${postWasUpdated ? "Atualizado" : "Criado"} ${formattedDate}`}
         </div>
 
         <div
-          className="prose prose-sm max-w-none"
+          className="prose prose-sm max-w-none post-content"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
       </CardContent>

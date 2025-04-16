@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { PostItem } from "./post";
 import { Spinner } from "@/components/ui/spinner";
@@ -23,14 +23,17 @@ interface PostsListProps {
   initialPosts: PostProjection[];
   initialNextCursor?: string;
   currentUserOnly?: boolean;
+  currentUserId?: string;
 }
 
 export function PostsList({
   initialPosts,
   initialNextCursor,
   currentUserOnly,
+  currentUserId,
 }: PostsListProps) {
   const observerTarget = useRef<HTMLDivElement>(null);
+  const [localPosts, setLocalPosts] = useState<PostProjection[]>(initialPosts);
 
   const {
     data,
@@ -79,7 +82,13 @@ export function PostsList({
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  const posts = data?.pages.flatMap((page) => page.posts) || [];
+  // Combine all pages of posts into a flat array
+  useEffect(() => {
+    if (data) {
+      const allPosts = data.pages.flatMap((page) => page.posts);
+      setLocalPosts(allPosts);
+    }
+  }, [data]);
 
   if (status === "error") {
     return (
@@ -92,9 +101,15 @@ export function PostsList({
     );
   }
 
+  const handlePostDeleted = (postId: string) => {
+    setLocalPosts((currentPosts) =>
+      currentPosts.filter((post) => post.id !== postId)
+    );
+  };
+
   return (
     <div className="space-y-4">
-      {posts.length === 0 && (
+      {localPosts.length === 0 && (
         <Alert>
           <CircleAlert />
           <AlertTitle>Nenhum post encontrado</AlertTitle>
@@ -105,8 +120,13 @@ export function PostsList({
         </Alert>
       )}
 
-      {posts.map((post) => (
-        <PostItem key={post.id} post={post} />
+      {localPosts.map((post) => (
+        <PostItem
+          key={post.id}
+          post={post}
+          currentUserId={currentUserId}
+          onPostDeleted={handlePostDeleted}
+        />
       ))}
 
       <div ref={observerTarget} className="h-4" />
@@ -117,7 +137,7 @@ export function PostsList({
         </div>
       )}
 
-      {!hasNextPage && posts.length > 0 && (
+      {!hasNextPage && localPosts.length > 0 && (
         <p className="text-center text-gray-500 py-4">
           Não há mais posts para carregar
         </p>

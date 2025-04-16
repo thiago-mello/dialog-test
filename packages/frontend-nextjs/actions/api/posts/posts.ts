@@ -1,7 +1,7 @@
 "use server";
 
 import { API_MY_POSTS_URL, API_POSTS_URL } from "@/constants/api";
-import { getRequest, postRequest, putRequest } from "../base";
+import { deleteRequest, getRequest, postRequest, putRequest } from "../base";
 
 export interface Post {
   id?: string;
@@ -109,4 +109,15 @@ export async function listPosts(
     posts: response.body,
     nextCursor,
   };
+}
+
+/**
+ * Deletes a post by its ID
+ * @param id - The unique identifier of the post to delete
+ * @returns Promise that resolves when deletion is complete
+ * @throws Error if deletion fails
+ */
+export async function deletePost(id: string): Promise<void> {
+  const url = `${API_POSTS_URL}/${id}`;
+  await deleteRequest(url);
 }
