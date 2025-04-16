@@ -20,6 +20,7 @@ type ListPostRequestDto struct {
 type ListPostResponseDto struct {
 	Id                string          `json:"id,omitempty"`
 	Content           string          `json:"content,omitempty"`
+	IsPrivate         bool            `json:"is_private"`
 	User              ListPostUserDto `json:"user"`
 	CreatedAt         time.Time       `json:"created_at"`
 	UpdatedAt         time.Time       `json:"updated_at"`

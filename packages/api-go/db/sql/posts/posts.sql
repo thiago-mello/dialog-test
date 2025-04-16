@@ -37,6 +37,7 @@ SELECT
     u.bio AS user_bio,
     p.created_at,
     p.updated_at,
+    (NOT is_public) AS is_private,
     (
     SELECT
         count(*)
@@ -57,7 +58,11 @@ FROM
 INNER JOIN users u ON
     p.user_id = u.id
 WHERE
-    p.is_public IS TRUE
+    {{- if .ShowPrivate}}
+        TRUE
+    {{else}}
+        p.is_public IS TRUE
+    {{end}}
     {{- if .LastSeenId}}
         AND p.id < :last_seen_id
     {{end}}

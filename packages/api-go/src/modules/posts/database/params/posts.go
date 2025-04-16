@@ -7,4 +7,5 @@ type GetPostsParams struct {
 	LastSeenId    *uuid.UUID `db:"last_seen_id"`
 	CurrentUserId uuid.UUID  `db:"current_user_id"`
 	UserId        *uuid.UUID `db:"user_id"`
+	ShowPrivate   bool       `db:"show_private"`
 }

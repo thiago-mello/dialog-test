@@ -38,6 +38,7 @@ func (a *ListMyPostsHttpAdapter) Query(ctx echo.Context) error {
 		LastSeenId:    utils.StringPointerToUuid(queryParams.LastSeenId),
 		CurrentUserId: appCtx.User.Id,
 		UserId:        &appCtx.User.Id,
+		ShowPrivate:   true,
 	}
 
 	posts, err := a.persistence.ListPosts(ctx.Request().Context(), filters)
@@ -47,8 +48,9 @@ func (a *ListMyPostsHttpAdapter) Query(ctx echo.Context) error {
 
 	mappedPosts := lo.Map(posts, func(post *projections.ListPostsProjection, _ int) dto.ListPostResponseDto {
 		return dto.ListPostResponseDto{
-			Id:      post.Id.String(),
-			Content: post.Content,
+			Id:        post.Id.String(),
+			Content:   post.Content,
+			IsPrivate: post.IsPrivate,
 			User: dto.ListPostUserDto{
 				Id:   post.UserId.String(),
 				Name: post.UserName,
