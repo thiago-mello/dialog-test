@@ -68,3 +68,8 @@ ORDER BY
     p.id DESC
     LIMIT :page_size
 {{end}}
+
+{{define "post.Delete"}}
+    DELETE FROM posts
+    WHERE id = :id AND user_id = :user_id
+{{end}}

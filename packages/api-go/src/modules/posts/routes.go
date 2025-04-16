@@ -5,6 +5,7 @@ import (
 	"github.com/leandro-andrade-candido/api-go/src/config"
 	"github.com/leandro-andrade-candido/api-go/src/libs/application/middlewares"
 	"github.com/leandro-andrade-candido/api-go/src/modules/posts/commands/createpost"
+	"github.com/leandro-andrade-candido/api-go/src/modules/posts/commands/deletepost"
 	"github.com/leandro-andrade-candido/api-go/src/modules/posts/commands/updatepost"
 	"github.com/leandro-andrade-candido/api-go/src/modules/posts/queries/getpost"
 	"github.com/leandro-andrade-candido/api-go/src/modules/posts/queries/listmyposts"
@@ -20,6 +21,7 @@ func ConfigPostRoutes(router *echo.Echo) {
 	routeGroup.GET("/:id", getPost().Query)
 	routeGroup.GET("", listPosts().Query)
 	routeGroup.GET("/my-posts", listMyPosts().Query)
+	routeGroup.DELETE("/:id", deletePost().Handle)
 }
 
 func createPost() *createpost.CreatePostHttpAdapter {
@@ -40,4 +42,8 @@ func listPosts() *listposts.ListPostsHttpAdapter {
 
 func listMyPosts() *listmyposts.ListMyPostsHttpAdapter {
 	return listmyposts.NewListMyPostAdapter(config.GetDb())
+}
+
+func deletePost() *deletepost.DeletePostHttpAdapter {
+	return deletepost.NewDeletePostAdapter(config.GetDb())
 }

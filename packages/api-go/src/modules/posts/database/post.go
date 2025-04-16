@@ -27,6 +27,7 @@ type PostsDatabaseOutputPort interface {
 	FindByID(ctx context.Context, id uuid.UUID) (*domain.Post, error)
 	Update(ctx context.Context, tx *sqlx.Tx, post *domain.Post) error
 	ListPosts(ctx context.Context, filters params.GetPostsParams) ([]*projections.ListPostsProjection, error)
+	Delete(ctx context.Context, tx *sqlx.Tx, postID, userID uuid.UUID) error
 }
 
 // Save persists a post entity to the database
@@ -120,4 +121,38 @@ func (p *PostsDatabaseOutputAdapter) ListPosts(ctx context.Context, filters para
 		return nil, err
 	}
 	return posts, nil
+}
+
+func (p *PostsDatabaseOutputAdapter) Delete(ctx context.Context, tx *sqlx.Tx, postID, userID uuid.UUID) error {
+	sqlString, err := sql.GetSql("post.Delete", nil)
+	if err != nil {
+		return err
+	}
+
+	dbTx := tx
+	if tx == nil {
+		dbTx = p.db.MustBegin()
+	}
+
+	params := map[string]any{
+		"id":      postID,
+		"user_id": userID,
+	}
+
+	result, err := dbTx.NamedExecContext(ctx, sqlString, params)
+	if err != nil {
+		dbTx.Rollback()
+		return err
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		dbTx.Rollback()
+		return errors.New("no posts deleted")
+	}
+
+	if tx == nil {
+		return dbTx.Commit()
+	}
+	return nil
 }
