@@ -2,7 +2,7 @@ package dto
 
 type CreatePostDto struct {
 	Content  string `json:"content" validate:"required,max=12000"`
-	IsPublic bool   `json:"is_public" validate:"required"`
+	IsPublic bool   `json:"is_public"`
 }
 
 type PostCreatedResponseDto struct {

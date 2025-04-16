@@ -33,27 +33,27 @@ func ConfigPostRoutes(router *echo.Echo) {
 }
 
 func createPost() *createpost.CreatePostHttpAdapter {
-	return createpost.NewCreatePostAdapter(config.GetDb())
+	return createpost.NewCreatePostAdapter(config.GetDb(), config.GetCache())
 }
 
 func updatePost() *updatepost.UpdatePostHttpAdapter {
-	return updatepost.NewUpdatePostAdapter(config.GetDb())
+	return updatepost.NewUpdatePostAdapter(config.GetDb(), config.GetCache())
 }
 
 func getPost() *getpost.GetPostHttpAdapter {
-	return getpost.NewGetPostAdapter(config.GetDb())
+	return getpost.NewGetPostAdapter(config.GetDb(), config.GetCache())
 }
 
 func listPosts() *listposts.ListPostsHttpAdapter {
-	return listposts.NewListPostAdapter(config.GetDb())
+	return listposts.NewListPostAdapter(config.GetDb(), config.GetCache())
 }
 
 func listMyPosts() *listmyposts.ListMyPostsHttpAdapter {
-	return listmyposts.NewListMyPostAdapter(config.GetDb())
+	return listmyposts.NewListMyPostAdapter(config.GetDb(), config.GetCache())
 }
 
 func deletePost() *deletepost.DeletePostHttpAdapter {
-	return deletepost.NewDeletePostAdapter(config.GetDb())
+	return deletepost.NewDeletePostAdapter(config.GetDb(), config.GetCache())
 }
 
 func likePost() *likepost.LikePostHttpAdapter {

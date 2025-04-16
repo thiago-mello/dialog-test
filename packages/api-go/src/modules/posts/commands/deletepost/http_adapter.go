@@ -1,6 +1,7 @@
 package deletepost
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -8,14 +9,16 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/leandro-andrade-candido/api-go/src/libs/application/context"
 	"github.com/leandro-andrade-candido/api-go/src/libs/application/errs"
+	"github.com/leandro-andrade-candido/api-go/src/libs/cache"
 )
 
 type DeletePostHttpAdapter struct {
 	useCase DeletePostUseCase
+	cache   cache.Cache
 }
 
-func NewDeletePostAdapter(db *sqlx.DB) *DeletePostHttpAdapter {
-	return &DeletePostHttpAdapter{useCase: NewUseCase(db)}
+func NewDeletePostAdapter(db *sqlx.DB, cache cache.Cache) *DeletePostHttpAdapter {
+	return &DeletePostHttpAdapter{useCase: NewUseCase(db), cache: cache}
 }
 
 // Handle processes a request to delete a post
@@ -35,5 +38,14 @@ func (a *DeletePostHttpAdapter) Handle(c echo.Context) error {
 	if err := a.useCase.DeletePost(c.Request().Context(), command); err != nil {
 		return err
 	}
+
+	a.invalidateCache(c, appCtx.User.Id, postID)
 	return c.NoContent(http.StatusNoContent)
+}
+
+func (a *DeletePostHttpAdapter) invalidateCache(ctx echo.Context, userID uuid.UUID, postId uuid.UUID) {
+	postKey := fmt.Sprintf("user:%s;post:%s", userID.String(), postId.String())
+	timelinePattern := fmt.Sprintf("user:%s;timeline*", userID.String())
+	a.cache.Delete(ctx.Request().Context(), postKey)
+	a.cache.DeleteByPattern(ctx.Request().Context(), timelinePattern)
 }
