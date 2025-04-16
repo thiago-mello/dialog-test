@@ -42,7 +42,9 @@ export default async function AppWrapper({
         <main className="w-full">
           {isLoggedIn && <SidebarTrigger />}
           <div
-            className={`w-full ${isLoggedIn ? "max-w-screen-xl" : ""} mx-auto`}
+            className={`w-full ${
+              isLoggedIn ? "max-w-screen-xl" : ""
+            } mx-auto px-2`}
           >
             {children}
           </div>

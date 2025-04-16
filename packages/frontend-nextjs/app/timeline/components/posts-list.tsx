@@ -14,7 +14,7 @@ import Link from "next/link";
 
 async function fetchPosts(
   cursor?: string,
-  currentUserOnly: boolean = false
+  currentUserOnly?: boolean
 ): Promise<PostsResponse> {
   return await listPosts(cursor, currentUserOnly);
 }

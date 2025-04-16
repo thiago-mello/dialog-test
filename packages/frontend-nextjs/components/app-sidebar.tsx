@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, ThumbsUp, UserPen } from "lucide-react";
+import { CircleUserRound, LogOut, Rss, UserPen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -58,8 +58,20 @@ export function AppSidebar({ user }: { user: User }): JSX.Element {
                   className={getMenuItemStyle(pathname, "/timeline")}
                 >
                   <Link href="/timeline">
-                    <ThumbsUp />
+                    <Rss />
                     <span>Linha do Tempo</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem key="MeusPosts">
+                <SidebarMenuButton
+                  asChild
+                  className={getMenuItemStyle(pathname, "/timeline/mine")}
+                >
+                  <Link href="/timeline/mine">
+                    <CircleUserRound />
+                    <span>Meus Posts</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -132,5 +144,5 @@ export function AppSidebar({ user }: { user: User }): JSX.Element {
 function getMenuItemStyle(pathname: string, targetPath: string): string {
   const selectedStyle = "bg-zinc-200 hover:bg-zinc-200";
 
-  return pathname?.match(targetPath) ? selectedStyle : "";
+  return pathname?.match(`^${targetPath}$`) ? selectedStyle : "";
 }

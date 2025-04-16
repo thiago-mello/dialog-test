@@ -25,6 +25,7 @@ import {
   AlertDialogAction,
   AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 
 async function toggleLike(postId: string, isLiked: boolean): Promise<void> {
   await likePost(postId, !isLiked);
@@ -152,8 +153,16 @@ export function PostItem({
           </div>
         </div>
 
-        <div className="text-xs text-gray-500 mb-3">
-          {`${postWasUpdated ? "Atualizado" : "Criado"} ${formattedDate}`}
+        <div className="flex flex-row mb-3 items-center">
+          <div className="text-xs text-gray-500">
+            {`${postWasUpdated ? "Atualizado" : "Criado"} ${formattedDate}`}
+          </div>
+
+          {post.is_private && (
+            <Badge className="ml-2" variant="outline">
+              Privado
+            </Badge>
+          )}
         </div>
 
         <div

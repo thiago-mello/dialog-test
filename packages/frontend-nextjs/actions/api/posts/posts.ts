@@ -12,6 +12,7 @@ export interface Post {
 export interface PostProjection {
   id: string;
   content: string;
+  is_private: boolean;
   created_at: string;
   updated_at: string;
   user: UserProjection;
