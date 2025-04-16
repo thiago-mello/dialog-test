@@ -8,5 +8,5 @@ type Model struct {
 
 type AuditableModel struct {
 	Model
-	UpdatedAt *time.Time `db:"updated_at"`
+	UpdatedAt time.Time `db:"updated_at"`
 }
