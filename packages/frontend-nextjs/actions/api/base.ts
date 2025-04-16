@@ -69,6 +69,30 @@ export async function postRequest<T>(
 }
 
 /**
+ * Makes a DELETE request to the specified path with optional query parameters
+ * @param path - The URL path to make the request to
+ * @param params - Optional query parameters to append to the URL
+ * @returns Promise resolving to the response data of type T, or undefined if not found
+ * @throws Redirects to login page if no active session or unauthorized
+ */
+export async function deleteRequest<T>(
+  path: string,
+  params: any = undefined
+): Promise<ApiResponse<T>> {
+  const session = await getSession();
+
+  const url = new URL(path);
+  if (params) {
+    url.search = getUrlQueryStringFromParams(params);
+  }
+
+  const options = getRequestOptions("DELETE", undefined, session);
+  const response = await fetch(url, options);
+
+  return await manageResponse<T>(response);
+}
+
+/**
  * Generates request options for fetch API calls
  * @param method - The HTTP method to use
  * @param body - Optional request body
@@ -97,20 +121,23 @@ function getRequestOptions(
  * @throws Redirects to login page if response status is 401 (Unauthorized)
  */
 async function manageResponse<T>(response: Response): Promise<ApiResponse<T>> {
-  if (response.status === 401) {
-    redirect("/?expired=true");
+  switch (response.status) {
+    case 401:
+      redirect("/?expired=true");
+    case 204:
+      return {
+        status: 204,
+      };
+    case 404:
+      return {
+        status: 404,
+      };
+    default:
+      return {
+        status: response.status,
+        body: await response.json(),
+      };
   }
-
-  if (response?.status === 404) {
-    return {
-      status: 404,
-    };
-  }
-
-  return {
-    status: response.status,
-    body: await response.json(),
-  };
 }
 
 /**
