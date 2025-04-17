@@ -22,4 +22,4 @@ server:
 api:
   jwt:
     secret:
-    expires-in: 1h
+    expires-in: 3h

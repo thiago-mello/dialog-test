@@ -37,7 +37,7 @@ Uma API simples para uma rede social desenvolvida em Go, utilizando conceitos de
 ### Pré-requisitos
 
 - Go 1.20+
-- PostgreSQL e Redis (ou containers Docker)
+- PostgreSQL 16+ e Redis (ou containers Docker)
 - Arquivo `config.yaml` (copie de `config.example.yaml` na raiz do projeto)
 
 ### Passos:
@@ -47,7 +47,7 @@ Uma API simples para uma rede social desenvolvida em Go, utilizando conceitos de
    cp config.example.yaml config.yaml
    ```
 
-Preencha o `config.yaml` com suas credenciais de banco e Redis.
+Preencha o `config.yaml` com suas credenciais de banco e Redis e adicione uma string de segredo JWT para assinar os tokens.
 
 2. **Instalar Dependências**:
 
@@ -101,7 +101,7 @@ server:
 api:
   jwt:
     secret: "chave_secreta_para_jwt"
-    expires-in: 1h
+    expires-in: 3h
 ```
 
 ## 🧪 Testes
