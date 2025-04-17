@@ -522,6 +522,26 @@ paths:
       tags:
       - Users
   /v1/users/me:
+    delete:
+      description: Removes an user account and its associated data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Removes an user account
+      tags:
+      - Users
     get:
       description: Fetch details of the authenticated user
       produces:

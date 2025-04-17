@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
@@ -27,6 +28,11 @@ func (m *MockUsersDatabase) Insert(ctx context.Context, tx *sqlx.Tx, user *domai
 func (m *MockUsersDatabase) UpdateById(ctx context.Context, tx *sqlx.Tx, user *domain.User) (bool, error) {
 	args := m.Called(ctx, tx, user)
 	return args.Bool(0), args.Error(1)
+}
+
+func (m *MockUsersDatabase) DeleteById(ctx context.Context, tx *sqlx.Tx, id uuid.UUID) (int64, error) {
+	args := m.Called(ctx, tx, id)
+	return int64(args.Int(0)), args.Error(1)
 }
 
 func (m *MockUsersDatabase) FindByEmail(ctx context.Context, email string) (*domain.User, error) {

@@ -5,6 +5,7 @@ import (
 	"github.com/leandro-andrade-candido/api-go/src/config"
 	"github.com/leandro-andrade-candido/api-go/src/libs/application/middlewares"
 	"github.com/leandro-andrade-candido/api-go/src/modules/users/commands/createuser"
+	"github.com/leandro-andrade-candido/api-go/src/modules/users/commands/deleteuser"
 	"github.com/leandro-andrade-candido/api-go/src/modules/users/commands/updateuser"
 	"github.com/leandro-andrade-candido/api-go/src/modules/users/commands/userlogin"
 	"github.com/leandro-andrade-candido/api-go/src/modules/users/queries/existsemail"
@@ -21,6 +22,7 @@ func ConfigUserRoutes(router *echo.Echo) {
 	// protected user routes
 	routeGroup.PUT("/me", updateUser().Handle, middlewares.RequireJWTAuth())
 	routeGroup.GET("/me", getMyUser().Query, middlewares.RequireJWTAuth())
+	routeGroup.DELETE("/me", deleteMyUser().Handle, middlewares.RequireJWTAuth())
 }
 
 func createUser() *createuser.CreateUserHttpAdapter {
@@ -41,4 +43,8 @@ func getMyUser() *getmyuser.GetMyUserHttpAdapter {
 
 func login() *userlogin.UserLoginHttpAdapter {
 	return userlogin.NewUserLoginHttpAdapter(config.GetDb())
+}
+
+func deleteMyUser() *deleteuser.DeleteUserHttpAdapter {
+	return deleteuser.NewDeleteUserAdapter(config.GetDb(), config.GetCache())
 }

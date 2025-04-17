@@ -32,3 +32,10 @@
     WHERE
         u.id = :id
 {{end}}
+
+{{define "user.DeleteById"}}
+    DELETE FROM
+        users u
+    WHERE
+        u.id = :id
+{{end}}

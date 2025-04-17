@@ -5,6 +5,7 @@ import (
 
 	goSql "database/sql"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/leandro-andrade-candido/api-go/src/libs/sql"
 	"github.com/leandro-andrade-candido/api-go/src/libs/utils"
@@ -19,6 +20,7 @@ type UsersDatabaseOutputPort interface {
 	Insert(ctx context.Context, tx *sqlx.Tx, user *domain.User) (bool, error)
 	UpdateById(ctx context.Context, tx *sqlx.Tx, user *domain.User) (bool, error)
 	FindByEmail(ctx context.Context, email string) (*domain.User, error)
+	DeleteById(ctx context.Context, tx *sqlx.Tx, id uuid.UUID) (int64, error)
 }
 
 type UsersDatabaseOutputAdapter struct {
@@ -96,4 +98,42 @@ func (u *UsersDatabaseOutputAdapter) FindByEmail(ctx context.Context, email stri
 	}
 
 	return &user, nil
+}
+
+// DeleteById deletes a user record from the database by their UUID
+// Parameters:
+//   - ctx: Context for the database operation
+//   - tx: Optional transaction. If nil, a new transaction will be created
+//   - id: UUID of the user to delete
+//
+// Returns:
+//   - int64: Number of rows affected by the delete operation
+//   - error: Any error that occurred during the operation
+func (u *UsersDatabaseOutputAdapter) DeleteById(ctx context.Context, tx *sqlx.Tx, id uuid.UUID) (int64, error) {
+	dbTx := tx
+	if tx == nil {
+		dbTx = u.db.MustBegin()
+	}
+
+	sqlString, err := sql.GetSql("user.DeleteById", nil)
+	if err != nil {
+		dbTx.Rollback()
+		return 0, err
+	}
+
+	result, err := dbTx.NamedExecContext(ctx, sqlString, map[string]interface{}{"id": id})
+	if err != nil {
+		dbTx.Rollback()
+		return 0, err
+	}
+
+	// commits transaction if it was created inside this method
+	if tx == nil {
+		err = dbTx.Commit()
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return result.RowsAffected()
 }
