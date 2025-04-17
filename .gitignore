@@ -54,4 +54,4 @@ microservices-go/pkg/
 api-go/bin/
 api-go/pkg/
 
-api-go/config.yaml
+config.yaml

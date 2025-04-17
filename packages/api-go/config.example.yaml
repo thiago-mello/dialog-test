@@ -1,0 +1,25 @@
+database:
+  relational:
+    host:
+    port:
+    database-name:
+    auth:
+      user:
+      password:
+  redis:
+    host:
+    password:
+    db: 0
+
+sql:
+  templates:
+    path: ./db/sql/**/*.sql
+
+server:
+  port: 8080
+  debug: true
+
+api:
+  jwt:
+    secret:
+    expires-in: 1h
