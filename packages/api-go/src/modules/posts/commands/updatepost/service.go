@@ -14,12 +14,12 @@ type UpdatePostUseCase interface {
 }
 
 type UpdatePostService struct {
-	persistence database.PostsDatabaseOutputPort
+	Persistence database.PostsDatabaseOutputPort
 }
 
 func NewUseCase(db *sqlx.DB) UpdatePostUseCase {
 	return &UpdatePostService{
-		persistence: database.NewPostsDatabaseOutputPort(db),
+		Persistence: database.NewPostsDatabaseOutputPort(db),
 	}
 }
 
@@ -32,7 +32,7 @@ func NewUseCase(db *sqlx.DB) UpdatePostUseCase {
 // 5. Persists the changes
 // Returns the updated post or an error if any step fails
 func (s *UpdatePostService) UpdatePost(ctx context.Context, command UpdatePostCommand) (*domain.Post, error) {
-	existingPost, err := s.persistence.FindByID(ctx, command.PostID)
+	existingPost, err := s.Persistence.FindByID(ctx, command.PostID)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (s *UpdatePostService) UpdatePost(ctx context.Context, command UpdatePostCo
 		return nil, errs.BadRequestError(err.Error())
 	}
 
-	if err := s.persistence.Update(ctx, nil, existingPost); err != nil {
+	if err := s.Persistence.Update(ctx, nil, existingPost); err != nil {
 		return nil, err
 	}
 

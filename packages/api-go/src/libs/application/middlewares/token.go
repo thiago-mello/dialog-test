@@ -22,7 +22,7 @@ func RequireJWTAuth() echo.MiddlewareFunc {
 			}
 
 			token := getJwtFromBearer(bearer)
-			claims, err := parseJwtToken(token)
+			claims, err := ParseJwtToken(token, tokenConfig.GetTokenConfiguration)
 			if err != nil {
 				return errs.NewApiError("user is not authorized", err, http.StatusUnauthorized)
 			}
@@ -42,15 +42,17 @@ func getJwtFromBearer(bearer string) string {
 	return value
 }
 
+type ConfigProvider func() (*tokenConfig.TokenConfig, error)
+
 // parses JWT token and get user claims.
 // Returns error if token is not valid or if parsing fails
-func parseJwtToken(token string) (*context.UserClaims, error) {
+func ParseJwtToken(token string, getTokenConfig ConfigProvider) (*context.UserClaims, error) {
 	parsedToken, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
 
-		tConfig, err := tokenConfig.GetTokenConfiguration()
+		tConfig, err := getTokenConfig()
 		if err != nil {
 			return nil, err
 		}

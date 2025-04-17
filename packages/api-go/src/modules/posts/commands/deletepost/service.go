@@ -12,17 +12,17 @@ type DeletePostUseCase interface {
 	DeletePost(ctx context.Context, command DeletePostCommand) error
 }
 type DeletePostService struct {
-	persistence database.PostsDatabaseOutputPort
+	Persistence database.PostsDatabaseOutputPort
 }
 
 func NewUseCase(db *sqlx.DB) DeletePostUseCase {
 	return &DeletePostService{
-		persistence: database.NewPostsDatabaseOutputPort(db),
+		Persistence: database.NewPostsDatabaseOutputPort(db),
 	}
 }
 
 func (s *DeletePostService) DeletePost(ctx context.Context, command DeletePostCommand) error {
-	err := s.persistence.Delete(ctx, nil, command.PostID, command.UserID)
+	err := s.Persistence.Delete(ctx, nil, command.PostID, command.UserID)
 
 	if err != nil && err.Error() == "no posts deleted" {
 		return errs.NotFoundError("Post not found")

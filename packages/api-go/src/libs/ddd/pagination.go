@@ -6,7 +6,7 @@ type PaginatedQuery struct {
 }
 
 func (p PaginatedQuery) GetPageSize() int32 {
-	if p.PageSize == 0 {
+	if p.PageSize <= 0 {
 		return 15
 	}
 

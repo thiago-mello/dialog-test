@@ -15,12 +15,12 @@ type CreatePostUseCase interface {
 }
 
 type CreatePostService struct {
-	persistence database.PostsDatabaseOutputPort
+	Persistence database.PostsDatabaseOutputPort
 }
 
 func NewUseCase(db *sqlx.DB) CreatePostUseCase {
 	return &CreatePostService{
-		persistence: database.NewPostsDatabaseOutputPort(db),
+		Persistence: database.NewPostsDatabaseOutputPort(db),
 	}
 }
 
@@ -49,7 +49,7 @@ func (c *CreatePostService) CreatePost(ctx context.Context, command CreatePostCo
 		return nil, errs.BadRequestError(err.Error())
 	}
 
-	if err := c.persistence.Save(ctx, nil, post); err != nil {
+	if err := c.Persistence.Save(ctx, nil, post); err != nil {
 		return nil, err
 	}
 
