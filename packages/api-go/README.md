@@ -2,8 +2,6 @@
 
 Uma API simples para uma rede social desenvolvida em Go, utilizando conceitos de Arquitetura Hexagonal, DDD e CQRS.
 
----
-
 ## 📂 Estrutura de Pastas
 
 ```yaml
@@ -29,8 +27,6 @@ Uma API simples para uma rede social desenvolvida em Go, utilizando conceitos de
 │
 └── main.go # Ponto de entrada da aplicação
 ```
-
----
 
 ## 🚀 Como Construir e Executar
 
@@ -112,10 +108,12 @@ Para executar testes unitários:
 go test -v ./src/...
 ```
 
----
+## 📖 Documentação
+
+A referência de endpoints pode ser acessada por meio da requisição `GET /docs/index.html` em um navegador de internet.
 
 ## 📝 Notas Adicionais
 
 - **Cache**: As consultas a posts e usuários são cacheadas via Redis para melhor desempenho.
 - **Segurança**: Senhas são hasheadas com Argon2id e tokens JWT são assinados com HMAC.
-- **DDD**: Módulos seguem alguns princípios de Domain-Driven Design.
+- **DDD**: Módulos seguem alguns princípios de Domain-Driven Design, como _bounded contexts_.

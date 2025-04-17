@@ -17,6 +17,17 @@ func NewExistsUserByEmail(db *sqlx.DB) *ExistsUserByEmailHttpAdapter {
 	return &ExistsUserByEmailHttpAdapter{persistence: database.NewUsersDatabaseOutputPort(db)}
 }
 
+// Query CheckEmailExists godoc
+//
+//	@Summary		Check if email exists
+//	@Description	Returns whether a user with the given email exists
+//	@Tags			Users
+//	@Produce		json
+//	@Param			email	query	string	true	"Email to check"
+//	@Success		200		{object}	map[string]bool
+//	@Failure		400		{object}	errs.ErrorResponse
+//	@Failure		500		{object}	errs.ErrorResponse
+//	@Router			/v1/users/exists [get]
 func (e *ExistsUserByEmailHttpAdapter) Query(ctx echo.Context) error {
 	email := ctx.QueryParam("email")
 	if email == "" {

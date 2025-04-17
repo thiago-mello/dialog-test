@@ -23,6 +23,18 @@ func NewGetPostAdapter(db *sqlx.DB, cache cache.Cache) *GetPostHttpAdapter {
 	}
 }
 
+// Query GetPost godoc
+// @Summary Gets a post
+// @Description Retrieves a post by ID (owned by the user)
+// @Tags Posts
+// @Produce json
+// @Param id path string true "Post ID"
+// @Success 200 {object} dto.PostResponseDto
+// @Failure 400 {object} errs.ErrorResponse
+// @Failure 404 {object} errs.ErrorResponse
+// @Failure 500 {object} errs.ErrorResponse
+// @Router /v1/posts/{id} [get]
+// @Security ApiKeyAuth
 func (a *GetPostHttpAdapter) Query(c echo.Context) error {
 	appCtx := c.(*context.ApplicationContext)
 	postID, err := uuid.Parse(c.Param("id"))

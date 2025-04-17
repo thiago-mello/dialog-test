@@ -23,6 +23,20 @@ func NewUpdatePostAdapter(db *sqlx.DB, cache cache.Cache) *UpdatePostHttpAdapter
 	return &UpdatePostHttpAdapter{useCase: NewUseCase(db), cache: cache}
 }
 
+// Handle UpdatePost godoc
+// @Summary Updates a post
+// @Description Updates a post's content and visibility
+// @Tags Posts
+// @Accept json
+// @Produce json
+// @Param id path string true "Post ID"
+// @Param payload body dto.UpdatePostDto true "Updated post content"
+// @Success 200 {object} dto.PostUpdatedResponseDto
+// @Failure 400 {object} errs.ErrorResponse
+// @Failure 404 {object} errs.ErrorResponse
+// @Failure 500 {object} errs.ErrorResponse
+// @Router /v1/posts/{id} [put]
+// @Security ApiKeyAuth
 func (a *UpdatePostHttpAdapter) Handle(c echo.Context) error {
 	appCtx := c.(*context.ApplicationContext)
 	postID, err := uuid.Parse(c.Param("id"))

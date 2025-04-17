@@ -22,20 +22,18 @@ func NewCreatePostAdapter(db *sqlx.DB, cache cache.Cache) *CreatePostHttpAdapter
 	return &CreatePostHttpAdapter{useCase: NewUseCase(db), cache: cache}
 }
 
-// Handle processes HTTP requests to create a new post
-// It performs the following steps:
-// 1. Extracts the application context and validates request body
-// 2. Sanitizes the post content to remove unsafe HTML
-// 3. Creates a command with user ID, sanitized content and visibility setting
-// 4. Calls the use case to create the post
-// 5. Returns the created post details in JSON format
-//
-// Parameters:
-//   - ctx: Echo context containing the HTTP request/response
-//
-// Returns:
-//   - error: Any error that occurred during processing
-//   - On success: Returns HTTP 201 with post details
+// Handle CreatePost godoc
+// @Summary Creates a new post
+// @Description Creates a new post for the authenticated user
+// @Tags Posts
+// @Accept json
+// @Produce json
+// @Param payload body dto.CreatePostDto true "Post content"
+// @Success 201 {object} dto.PostCreatedResponseDto
+// @Failure 400 {object} errs.ErrorResponse
+// @Failure 500 {object} errs.ErrorResponse
+// @Router /v1/posts [post]
+// @Security ApiKeyAuth
 func (c *CreatePostHttpAdapter) Handle(ctx echo.Context) error {
 	appCtx := ctx.(*context.ApplicationContext)
 	body := &dto.CreatePostDto{}

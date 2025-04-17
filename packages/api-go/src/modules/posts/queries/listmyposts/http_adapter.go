@@ -22,6 +22,18 @@ func NewListMyPostAdapter(db *sqlx.DB, cache cache.Cache) *ListMyPostsHttpAdapte
 	}
 }
 
+// Query ListMyPosts godoc
+// @Summary Lists my posts
+// @Description Lists posts created by the authenticated user
+// @Tags Posts
+// @Produce json
+// @Param page_size query int false "Page size (1-50)"
+// @Param last_seen_id query string false "Last seen post ID"
+// @Success 200 {array} dto.ListPostResponseDto
+// @Failure 400 {object} errs.ErrorResponse
+// @Failure 500 {object} errs.ErrorResponse
+// @Router /v1/posts/my-posts [get]
+// @Security ApiKeyAuth
 func (a *ListMyPostsHttpAdapter) Query(ctx echo.Context) error {
 	appCtx := ctx.(*context.ApplicationContext)
 

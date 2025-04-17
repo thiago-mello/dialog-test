@@ -21,10 +21,18 @@ func NewDeletePostAdapter(db *sqlx.DB, cache cache.Cache) *DeletePostHttpAdapter
 	return &DeletePostHttpAdapter{useCase: NewUseCase(db), cache: cache}
 }
 
-// Handle processes a request to delete a post
-// It extracts the post ID from the URL parameters and the user ID from the context
-// Then calls the delete post use case and returns 204 No Content on success
-// Returns 400 Bad Request if the post ID is invalid
+// Handle DeletePost godoc
+// @Summary Deletes a post
+// @Description Deletes a post by ID, only if it belongs to the authenticated user
+// @Tags Posts
+// @Produce json
+// @Param id path string true "Post ID"
+// @Success 204
+// @Failure 400 {object} errs.ErrorResponse
+// @Failure 404 {object} errs.ErrorResponse
+// @Failure 500 {object} errs.ErrorResponse
+// @Router /v1/posts/{id} [delete]
+// @Security ApiKeyAuth
 func (a *DeletePostHttpAdapter) Handle(c echo.Context) error {
 	appCtx := c.(*context.ApplicationContext)
 	postID, err := uuid.Parse(c.Param("id"))

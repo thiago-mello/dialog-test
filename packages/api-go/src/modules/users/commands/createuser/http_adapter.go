@@ -16,6 +16,18 @@ func NewCreateUserAdapter(db *sqlx.DB) *CreateUserHttpAdapter {
 	return &CreateUserHttpAdapter{useCase: NewUseCase(db)}
 }
 
+// Handle CreateUser godoc
+//
+//	@Summary		Register a new user
+//	@Description	Creates a user with name, email, password and optional bio
+//	@Tags			Users
+//	@Accept			json
+//	@Produce		json
+//	@Param			payload	body	dto.CreateUserDto	true	"User payload"
+//	@Success		201
+//	@Failure		400		{object}	errs.ErrorResponse
+//	@Failure		500		{object}	errs.ErrorResponse
+//	@Router			/v1/users [post]
 func (c *CreateUserHttpAdapter) Handle(ctx echo.Context) error {
 	body := &dto.CreateUserDto{}
 
@@ -41,5 +53,5 @@ func (c *CreateUserHttpAdapter) Handle(ctx echo.Context) error {
 		return err
 	}
 
-	return ctx.JSON(http.StatusCreated, nil)
+	return ctx.NoContent(http.StatusCreated)
 }

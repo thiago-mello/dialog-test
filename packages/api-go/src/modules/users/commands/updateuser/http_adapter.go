@@ -18,6 +18,20 @@ func NewUpdateUserAdapter(db *sqlx.DB) *UpdateCurrentUserHttpAdapter {
 	return &UpdateCurrentUserHttpAdapter{useCase: NewUpdateUserUseCase(db)}
 }
 
+// Handle UpdateUser godoc
+//
+//	@Summary		Update current user
+//	@Description	Update the authenticated user with name, email, password, and bio
+//	@Tags			Users
+//	@Security		ApiKeyAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			payload	body	dto.UpdateUserDto	true	"User update payload"
+//	@Success		200		{object}	map[string]string
+//	@Failure		400		{object}	errs.ErrorResponse
+//	@Failure		401		{object}	errs.ErrorResponse
+//	@Failure		500		{object}	errs.ErrorResponse
+//	@Router			/v1/users/me [put]
 func (c *UpdateCurrentUserHttpAdapter) Handle(ctx echo.Context) error {
 	body := &dto.UpdateUserDto{}
 	applicationContext := ctx.(*context.ApplicationContext)

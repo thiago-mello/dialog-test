@@ -23,6 +23,18 @@ func NewLikePostAdapter(db *sqlx.DB) *LikePostHttpAdapter {
 	}
 }
 
+// Handle LikePost godoc
+// @Summary Likes a post
+// @Description Likes a post by ID
+// @Tags Posts
+// @Produce json
+// @Param id path string true "Post ID"
+// @Success 204
+// @Failure 400 {object} errs.ErrorResponse
+// @Failure 404 {object} errs.ErrorResponse
+// @Failure 500 {object} errs.ErrorResponse
+// @Router /v1/posts/{id}/likes [post]
+// @Security ApiKeyAuth
 func (a *LikePostHttpAdapter) Handle(c echo.Context) error {
 	appCtx := c.(*context.ApplicationContext)
 	postID, err := uuid.Parse(c.Param("id"))
