@@ -1,0 +1,3 @@
+sql:
+  templates:
+    path: ../../../db/sql/**/*.sql
