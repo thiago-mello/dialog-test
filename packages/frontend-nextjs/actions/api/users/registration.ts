@@ -6,7 +6,7 @@ import {
   API_USER_EXISTS_URL,
 } from "@/constants/api";
 import { getUrlQueryStringFromParams } from "@/utils/url";
-import { getRequest, putRequest } from "../base";
+import { ApiResponse, deleteRequest, getRequest, putRequest } from "../base";
 
 export interface User {
   name: string;
@@ -103,4 +103,8 @@ export async function updateMyUser(
   }
 
   return;
+}
+
+export async function deleteMyUser(): Promise<ApiResponse<void>> {
+  return await deleteRequest<void>(API_MY_USER_URL);
 }

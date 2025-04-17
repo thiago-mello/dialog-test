@@ -133,10 +133,17 @@ async function manageResponse<T>(response: Response): Promise<ApiResponse<T>> {
         status: 404,
       };
     default:
-      return {
-        status: response.status,
-        body: await response.json(),
-      };
+      try {
+        const body = await response.json();
+        return {
+          status: response.status,
+          body: body,
+        };
+      } catch (error) {
+        return {
+          status: response.status,
+        };
+      }
   }
 }
 
