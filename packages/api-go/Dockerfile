@@ -16,4 +16,8 @@ COPY --from=build /app/db/ ./db/
 
 COPY --from=build /app/config.yaml .
 
+ENV PORT=8080
+
+EXPOSE 8080
+
 CMD [ "./api" ]

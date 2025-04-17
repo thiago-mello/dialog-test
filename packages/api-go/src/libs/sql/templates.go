@@ -13,6 +13,9 @@ var shouldGetTemplates = true
 
 func init() {
 	templatesPath := config.GetString("sql.templates.path")
+	if templatesPath == "" {
+		templatesPath = "./db/sql/**/*.sql"
+	}
 
 	var err error
 	sqlTemplates, err = template.ParseGlob(templatesPath)

@@ -71,9 +71,7 @@ func (s *CachedListMyPostsService) ListPosts(ctx context.Context, filters dto.Li
 	})
 
 	if len(mappedPosts) > 0 {
-		if err := s.cache.Set(ctx, cacheKey, mappedPosts, s.ttl); err != nil {
-			return nil, err
-		}
+		s.cache.Set(ctx, cacheKey, mappedPosts, s.ttl)
 	}
 	return &mappedPosts, nil
 }

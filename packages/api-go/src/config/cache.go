@@ -6,14 +6,15 @@ import (
 
 var redisCache cache.Cache
 
-func init() {
+func GetCache() cache.Cache {
+	return redisCache
+}
+
+func initializeCache() {
+	redisAddress := GetString("database.redis.address")
 	redisCache = cache.NewRedisCache(
-		GetString("database.redis.host"),
+		redisAddress,
 		GetString("database.redis.password"),
 		GetInt("database.redis.db"),
 	)
-}
-
-func GetCache() cache.Cache {
-	return redisCache
 }

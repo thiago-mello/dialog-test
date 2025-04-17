@@ -10,7 +10,7 @@ import (
 
 var db *sqlx.DB
 
-func init() {
+func initializeDatabase() {
 	host := GetString("database.relational.host")
 	port := GetInt("database.relational.port")
 	dbName := GetString("database.relational.database-name")

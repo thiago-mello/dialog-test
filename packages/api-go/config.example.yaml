@@ -7,7 +7,7 @@ database:
       user:
       password:
   redis:
-    host:
+    address: localhost:6379
     password:
     db: 0
 
