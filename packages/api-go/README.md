@@ -82,7 +82,7 @@ database:
       user: seu_usuario
       password: sua_senha
   redis:
-    host: localhost:6379
+    address: localhost:6379
     password:
     db: 0
 

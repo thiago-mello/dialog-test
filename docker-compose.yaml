@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=dialog
+    volumes:
+    - ./packages/api-go/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis:7-alpine
+
+  backend:
+    depends_on:
+      - postgres
+      - redis
+    build: ./packages/api-go
+    environment:
+      - JWT_SECRET=ekYQ0uNeBryum8p6FrCiEA4LPF48exGbhITa4tZyVoJbu9j5xKVfCwzlkRnL7moE
+      - JWT_EXPIRES_IN=3h
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=dialog
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_ADDR=redis:6379
+      - REDIS_DB=0
+    
+  frontend:
+    build: ./packages/frontend-nextjs
+    depends_on:
+      - backend
+    ports:
+      - 3000:3000
+    environment:
+      - API_BASE_URL=http://backend:8080
+      - COOKIE_PASSWORD=3U9E3gWgcofh1PDrh6oTL0KklB4HEqaP8U1Mqk4346j6GoFmUUzUYdXkh645eY7l
