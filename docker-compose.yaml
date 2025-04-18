@@ -26,6 +26,7 @@ services:
       - DB_PASSWORD=postgres
       - REDIS_ADDR=redis:6379
       - REDIS_DB=0
+      - TRACES_OTLP_ENDPOINT=tempo:4318
     
   frontend:
     build: ./packages/frontend-nextjs
@@ -36,3 +37,21 @@ services:
     environment:
       - API_BASE_URL=http://backend:8080
       - COOKIE_PASSWORD=3U9E3gWgcofh1PDrh6oTL0KklB4HEqaP8U1Mqk4346j6GoFmUUzUYdXkh645eY7l
+
+  tempo:
+    image: grafana/tempo:latest
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./otel/tempo.yaml:/etc/tempo.yaml
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    depends_on:
+      - tempo
+
+volumes:
+  grafana-storage:
