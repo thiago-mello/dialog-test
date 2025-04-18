@@ -11,19 +11,26 @@ import (
 	tokenConfig "github.com/leandro-andrade-candido/api-go/src/config/token"
 	"github.com/leandro-andrade-candido/api-go/src/libs/application/context"
 	"github.com/leandro-andrade-candido/api-go/src/libs/application/errs"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 func RequireJWTAuth() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
+			// trace span
+			span := trace.SpanFromContext(c.Request().Context())
+
 			bearer := c.Request().Header.Get("Authorization")
 			if bearer == "" {
+				span.SetAttributes(attribute.Bool("x.user.auth", false))
 				return errs.NewApiError("user token is missing", nil, http.StatusUnauthorized)
 			}
 
 			token := getJwtFromBearer(bearer)
 			claims, err := ParseJwtToken(token, tokenConfig.GetTokenConfiguration)
 			if err != nil {
+				span.SetAttributes(attribute.Bool("x.user.auth", false))
 				return errs.NewApiError("user is not authorized", err, http.StatusUnauthorized)
 			}
 
@@ -32,6 +39,11 @@ func RequireJWTAuth() echo.MiddlewareFunc {
 				User:    *claims,
 			}
 
+			// sets user id as span attribute
+			span.SetAttributes(
+				attribute.Bool("x.user.auth", true),
+				attribute.String("x.user.id", claims.Id.String()),
+			)
 			return next(applicationContext)
 		}
 	}

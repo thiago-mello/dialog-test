@@ -86,4 +86,7 @@ func configureDefaultEnvironmentVariables() {
 	viper.BindEnv("database.redis.address", "REDIS_ADDR")
 	viper.BindEnv("database.redis.password", "REDIS_PASSWORD")
 	viper.BindEnv("database.redis.db", "REDIS_DB")
+
+	// instrumentation
+	viper.BindEnv("otel.traces.otlp.endpoint", "TRACES_OTLP_ENDPOINT")
 }

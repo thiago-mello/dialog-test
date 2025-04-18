@@ -23,3 +23,8 @@ api:
   jwt:
     secret:
     expires-in: 3h
+
+otel:
+  traces:
+    oltp:
+      endpoint:

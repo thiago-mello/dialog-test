@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 
@@ -27,6 +28,15 @@ func main() {
 
 	e := server.GetServer()
 	routes.SetupRoutes(e)
+
+	tp := server.GetTracerProvider()
+	if tp != nil {
+		defer func() {
+			if err := tp.Shutdown(context.Background()); err != nil {
+				log.Printf("Error shutting down tracer provider: %v", err)
+			}
+		}()
+	}
 
 	// Swagger setup
 	e.GET("/docs/*", echoSwagger.WrapHandler)

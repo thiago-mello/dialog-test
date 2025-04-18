@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 
+	"github.com/redis/go-redis/extra/redisotel/v9"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -14,12 +16,18 @@ type RedisCache struct {
 }
 
 func NewRedisCache(addr, password string, db int) *RedisCache {
+	client := redis.NewClient(&redis.Options{
+		Addr:     addr,
+		Password: password,
+		DB:       db,
+	})
+	err := redisotel.InstrumentTracing(client)
+	if err != nil {
+		log.Default().Println("failed to instrument redis tracing", err)
+	}
+
 	return &RedisCache{
-		client: redis.NewClient(&redis.Options{
-			Addr:     addr,
-			Password: password,
-			DB:       db,
-		}),
+		client: client,
 	}
 }
 

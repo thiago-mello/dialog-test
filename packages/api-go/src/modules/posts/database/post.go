@@ -46,7 +46,7 @@ func (p *PostsDatabaseOutputAdapter) Save(ctx context.Context, tx *sqlx.Tx, post
 
 	dbTx := tx
 	if tx == nil {
-		dbTx = p.db.MustBegin()
+		dbTx = p.db.MustBeginTx(ctx, &sqlDb.TxOptions{})
 	}
 
 	_, err = dbTx.NamedExecContext(ctx, sqlString, post)
@@ -88,7 +88,7 @@ func (p *PostsDatabaseOutputAdapter) Update(ctx context.Context, tx *sqlx.Tx, po
 	}
 	dbTx := tx
 	if tx == nil {
-		dbTx = p.db.MustBegin()
+		dbTx = p.db.MustBeginTx(ctx, &sqlDb.TxOptions{})
 	}
 	result, err := dbTx.NamedExecContext(ctx, sqlString, post)
 	if err != nil {
@@ -131,7 +131,7 @@ func (p *PostsDatabaseOutputAdapter) Delete(ctx context.Context, tx *sqlx.Tx, po
 
 	dbTx := tx
 	if tx == nil {
-		dbTx = p.db.MustBegin()
+		dbTx = p.db.MustBeginTx(ctx, &sqlDb.TxOptions{})
 	}
 
 	params := map[string]any{

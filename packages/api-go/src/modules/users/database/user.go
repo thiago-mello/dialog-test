@@ -30,7 +30,7 @@ type UsersDatabaseOutputAdapter struct {
 func (u *UsersDatabaseOutputAdapter) Insert(ctx context.Context, tx *sqlx.Tx, user *domain.User) (userExists bool, err error) {
 	dbTx := tx
 	if tx == nil {
-		dbTx = u.db.MustBegin()
+		dbTx = u.db.MustBeginTx(ctx, &goSql.TxOptions{})
 	}
 
 	sqlString, err := sql.GetSql("user.Insert", user)
@@ -56,7 +56,7 @@ func (u *UsersDatabaseOutputAdapter) Insert(ctx context.Context, tx *sqlx.Tx, us
 func (u *UsersDatabaseOutputAdapter) UpdateById(ctx context.Context, tx *sqlx.Tx, user *domain.User) (userExists bool, err error) {
 	dbTx := tx
 	if tx == nil {
-		dbTx = u.db.MustBegin()
+		dbTx = u.db.MustBeginTx(ctx, &goSql.TxOptions{})
 	}
 
 	sqlString, err := sql.GetSql("user.UpdateById", user)
@@ -112,7 +112,7 @@ func (u *UsersDatabaseOutputAdapter) FindByEmail(ctx context.Context, email stri
 func (u *UsersDatabaseOutputAdapter) DeleteById(ctx context.Context, tx *sqlx.Tx, id uuid.UUID) (int64, error) {
 	dbTx := tx
 	if tx == nil {
-		dbTx = u.db.MustBegin()
+		dbTx = u.db.MustBeginTx(ctx, &goSql.TxOptions{})
 	}
 
 	sqlString, err := sql.GetSql("user.DeleteById", nil)
