@@ -70,7 +70,7 @@ func (s *CachedListMyPostsService) ListPosts(ctx context.Context, filters dto.Li
 		}
 	})
 
-	if len(mappedPosts) > 0 {
+	if len(mappedPosts) > 0 || filters.LastSeenId != nil {
 		s.cache.Set(ctx, cacheKey, mappedPosts, s.ttl)
 	}
 	return &mappedPosts, nil

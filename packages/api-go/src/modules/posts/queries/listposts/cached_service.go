@@ -69,7 +69,8 @@ func (s *CachedListPostService) ListPosts(ctx context.Context, filters dto.ListP
 		}
 	})
 
-	if len(mappedPosts) > 0 {
+	// only cache if it has posts or if it is the last page of timeline
+	if len(mappedPosts) > 0 || filters.LastSeenId != nil {
 		s.cache.Set(ctx, cacheKey, mappedPosts, s.ttl)
 	}
 	return &mappedPosts, nil
