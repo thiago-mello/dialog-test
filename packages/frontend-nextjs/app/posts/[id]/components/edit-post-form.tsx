@@ -1,20 +1,23 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Post, updatePost } from "@/actions/api/posts/posts";
 import RichTextEditor from "../../components/text-editor";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function EditPostForm({ initialPost }: { initialPost: Post }) {
   const [htmlContent, setHtmlContent] = useState(initialPost.content);
   const [isPrivate, setIsPrivate] = useState(!initialPost.is_public);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { toast } = useToast();
 
   const router = useRouter();
 
   const handleSubmit = async () => {
     if (!htmlContent) return;
+    setIsSubmitting(true);
 
     try {
       await updatePost(initialPost.id!, {
@@ -25,8 +28,12 @@ export default function EditPostForm({ initialPost }: { initialPost: Post }) {
         title: "Postagem atualizada com sucesso",
       });
 
-      router.push("/timeline");
+      setIsSubmitting(false);
+
+      const redirectRoute = isPrivate ? "/timeline/mine" : "/timeline";
+      router.push(redirectRoute);
     } catch (error) {
+      setIsSubmitting(false);
       console.error("Failed to update post:", error);
     }
   };
@@ -50,10 +57,10 @@ export default function EditPostForm({ initialPost }: { initialPost: Post }) {
       </div>
       <Button
         onClick={handleSubmit}
-        className="mt-4 self-end"
+        className="mt-4 self-end w-[92px]"
         disabled={!htmlContent}
       >
-        Atualizar
+        {isSubmitting ? <Spinner /> : "Atualizar"}
       </Button>
     </div>
   );

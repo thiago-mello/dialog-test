@@ -22,6 +22,7 @@ import {
 } from "@/actions/api/users/registration";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { Spinner } from "@/components/ui/spinner";
 
 const formSchema = z
   .object({
@@ -211,14 +212,10 @@ export default function RegistrationForm() {
           </Button>
           <Button
             type="submit"
-            className="ml-3"
+            className="ml-3 w-[93px]"
             disabled={availableEmail === false}
           >
-            {form.formState.isSubmitting ? (
-              <span className="animate-spin rounded-full h-4 w-4 border border-white border-t-transparent mr-2"></span>
-            ) : (
-              "Registrar"
-            )}
+            {form.formState.isSubmitting ? <Spinner /> : "Registrar"}
           </Button>
         </div>
       </form>

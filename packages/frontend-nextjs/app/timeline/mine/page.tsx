@@ -45,7 +45,7 @@ export default async function TimelinePage() {
       <div className="flex flex-row justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">Meus Posts</h1>
         <Button asChild>
-          <Link href="posts/new" className="text-white">
+          <Link href="/posts/new" className="text-white">
             <Plus />
             Nova Postagem
           </Link>

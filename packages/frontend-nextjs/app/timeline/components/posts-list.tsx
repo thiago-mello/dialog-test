@@ -115,7 +115,9 @@ export function PostsList({
           <AlertTitle>Nenhum post encontrado</AlertTitle>
           <AlertDescription>
             Não há posts para mostrar.
-            <Link href="posts/new">Crie seu primero post.</Link>
+            <Link className="ml-1 underline text-blue-500" href="/posts/new">
+              Crie seu primero post.
+            </Link>
           </AlertDescription>
         </Alert>
       )}
