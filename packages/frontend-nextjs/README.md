@@ -90,13 +90,19 @@ npm install
 
 ```env
 API_BASE_URL=urlDoBackend:porta
-SECRET_COOKIE_PASSWORD=suachavesupersecreta
+COOKIE_PASSWORD=suachavesupersecreta
 ```
 
 3. Inicie o servidor de desenvolvimento:
 
 ```bash
 npm run dev
+```
+
+4. Acesse a aplicação no navegador, por meio do endereço:
+
+```bash
+localhost:3000
 ```
 
 Certifique-se de que a API que alimenta o projeto esteja em execução.

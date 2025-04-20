@@ -98,6 +98,11 @@ api:
   jwt:
     secret: "chave_secreta_para_jwt"
     expires-in: 3h
+
+otel:
+  traces:
+    otlp:
+      endpoint:
 ```
 
 ## 🧪 Testes
@@ -110,7 +115,11 @@ go test -v ./src/...
 
 ## 📖 Documentação
 
-A referência de endpoints pode ser acessada por meio da requisição `GET /docs/index.html` em um navegador de internet.
+A referência de endpoints (Swagger) pode ser acessada por meio da requisição `GET /docs/index.html` em um navegador de internet.
+
+## 📡 Telemetria Simples
+
+O projeto pode ser configurado para exportar alguns Traces utilizando OpenTelemetry, por meio da configuração de um endpoint OTLP, que pode ser feita através do arquivo `config.yaml`.
 
 ## 📝 Notas Adicionais
 
