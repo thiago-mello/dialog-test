@@ -2,6 +2,7 @@ package userlogin
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -31,7 +32,8 @@ func NewLoginUseCase(db *sqlx.DB) UserLoginUseCase {
 }
 
 func (u *UserLoginService) LoginUser(ctx context.Context, command UserLoginCommand) (*dto.LoginResponseDto, error) {
-	user, err := u.persistence.FindByEmail(ctx, command.Email)
+	lowerCaseEmail := strings.ToLower(command.Email)
+	user, err := u.persistence.FindByEmail(ctx, lowerCaseEmail)
 	if err != nil {
 		return nil, err
 	}

@@ -2,6 +2,7 @@ package updateuser
 
 import (
 	"context"
+	"strings"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/leandro-andrade-candido/api-go/src/libs/application/errs"
@@ -35,7 +36,7 @@ func NewUpdateUserUseCase(db *sqlx.DB) UpdateUserUseCase {
 func (u *UpdateUserService) UpdateUser(ctx context.Context, command UpdateUserCommand) error {
 	user := &domain.User{
 		ID:    command.UserId,
-		Email: command.Email,
+		Email: strings.ToLower(command.Email),
 		Name:  command.Name,
 		Bio:   command.Bio,
 	}

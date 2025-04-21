@@ -2,6 +2,7 @@ package createuser
 
 import (
 	"context"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -78,7 +79,7 @@ func mapCommandToDomain(command CreateUserCommand) (*domain.User, error) {
 
 	return &domain.User{
 		ID:           id,
-		Email:        command.Email,
+		Email:        strings.ToLower(command.Email),
 		Name:         command.Name,
 		Bio:          command.Bio,
 		PasswordHash: passwordHash,
