@@ -26,7 +26,7 @@ type PostsDatabaseOutputPort interface {
 	Save(ctx context.Context, tx *sqlx.Tx, post *domain.Post) error
 	FindByID(ctx context.Context, id uuid.UUID) (*domain.Post, error)
 	Update(ctx context.Context, tx *sqlx.Tx, post *domain.Post) error
-	ListPosts(ctx context.Context, filters params.GetPostsParams) ([]*projections.ListPostsProjection, error)
+	ListPosts(ctx context.Context, filters params.GetPostsParams) (*[]projections.ListPostsProjection, error)
 	Delete(ctx context.Context, tx *sqlx.Tx, postID, userID uuid.UUID) error
 }
 
@@ -106,12 +106,12 @@ func (p *PostsDatabaseOutputAdapter) Update(ctx context.Context, tx *sqlx.Tx, po
 	return nil
 }
 
-func (p *PostsDatabaseOutputAdapter) ListPosts(ctx context.Context, filters params.GetPostsParams) ([]*projections.ListPostsProjection, error) {
+func (p *PostsDatabaseOutputAdapter) ListPosts(ctx context.Context, filters params.GetPostsParams) (*[]projections.ListPostsProjection, error) {
 	sqlString, err := sql.GetSql("post.ListPosts", filters)
 	if err != nil {
 		return nil, err
 	}
-	posts := []*projections.ListPostsProjection{}
+	posts := []projections.ListPostsProjection{}
 	query, args, err := utils.TranslateNamedQuery(sqlString, filters)
 	if err != nil {
 		return nil, err
@@ -120,7 +120,7 @@ func (p *PostsDatabaseOutputAdapter) ListPosts(ctx context.Context, filters para
 	if err != nil {
 		return nil, err
 	}
-	return posts, nil
+	return &posts, nil
 }
 
 func (p *PostsDatabaseOutputAdapter) Delete(ctx context.Context, tx *sqlx.Tx, postID, userID uuid.UUID) error {

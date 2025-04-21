@@ -16,22 +16,22 @@ type UpdateUserUseCase interface {
 }
 
 type UpdateUserService struct {
-	persistence database.UsersDatabaseOutputPort
+	Persistence database.UsersDatabaseOutputPort
 }
 
 func NewUpdateUserUseCase(db *sqlx.DB) UpdateUserUseCase {
 	return &UpdateUserService{
-		persistence: database.NewUsersDatabaseOutputPort(db),
+		Persistence: database.NewUsersDatabaseOutputPort(db),
 	}
 }
 
-// UpdateUser updates an existing user in the database based on the provided command
+// UpdateUser updates an existing user's information in the database
 // It takes a context and UpdateUserCommand containing the user details to update
-// If a password is provided, it will be hashed before storing
 // Returns error if:
 // - Password hashing fails
-// - The requested email is already taken by another user
-// - Database operation fails
+// - Email is already taken by another user
+// - User is not found
+// - Any other database error occurs
 func (u *UpdateUserService) UpdateUser(ctx context.Context, command UpdateUserCommand) error {
 	user := &domain.User{
 		ID:    command.UserId,
@@ -49,9 +49,13 @@ func (u *UpdateUserService) UpdateUser(ctx context.Context, command UpdateUserCo
 		user.PasswordHash = hash
 	}
 
-	userExists, err := u.persistence.UpdateById(ctx, nil, user)
+	userExists, err := u.Persistence.UpdateById(ctx, nil, user)
 	if userExists {
 		return errs.BadRequestError("The email requested is not available")
+	}
+
+	if err != nil && err.Error() == "user not found" {
+		return errs.NotFoundError("User not found")
 	}
 
 	return err

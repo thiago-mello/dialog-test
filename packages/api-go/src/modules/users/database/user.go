@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"errors"
 
 	goSql "database/sql"
 
@@ -65,10 +66,16 @@ func (u *UsersDatabaseOutputAdapter) UpdateById(ctx context.Context, tx *sqlx.Tx
 		return false, err
 	}
 
-	_, err = dbTx.NamedExecContext(ctx, sqlString, user)
+	result, err := dbTx.NamedExecContext(ctx, sqlString, user)
 	if err != nil {
 		dbTx.Rollback()
 		return utils.IsConstraintViolation(err, "users_email_key"), err
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		dbTx.Rollback()
+		return false, errors.New("user not found")
 	}
 
 	// commits transaction if it was created inside this method

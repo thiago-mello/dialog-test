@@ -29,6 +29,19 @@ func NewCachedListPostService(base database.PostsDatabaseOutputPort, cache cache
 	}
 }
 
+// ListPosts retrieves a list of posts for a given user with caching support.
+// It first attempts to fetch posts from cache using a key based on userId and LastSeenId.
+// If cache miss occurs, it fetches posts from the database, maps them to DTOs,
+// and stores the result in cache before returning.
+//
+// Parameters:
+//   - ctx: Context for the request
+//   - filters: DTO containing filter parameters like PageSize and LastSeenId
+//   - userId: UUID of the user requesting the posts
+//
+// Returns:
+//   - *[]dto.ListPostResponseDto: Pointer to slice of post DTOs
+//   - error: Error if any occurred during the operation
 func (s *CachedListPostService) ListPosts(ctx context.Context, filters dto.ListPostRequestDto, userId uuid.UUID) (*[]dto.ListPostResponseDto, error) {
 	cacheKey := fmt.Sprintf("user:%s;timeline", userId.String())
 	if filters.LastSeenId != nil {
@@ -52,7 +65,7 @@ func (s *CachedListPostService) ListPosts(ctx context.Context, filters dto.ListP
 		return nil, err
 	}
 
-	mappedPosts := lo.Map(dbPosts, func(post *projections.ListPostsProjection, _ int) dto.ListPostResponseDto {
+	mappedPosts := lo.Map(*dbPosts, func(post projections.ListPostsProjection, _ int) dto.ListPostResponseDto {
 		return dto.ListPostResponseDto{
 			Id:        post.Id.String(),
 			Content:   post.Content,

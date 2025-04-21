@@ -13,6 +13,23 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
 )
 
+// InitTracer initializes and configures an OpenTelemetry tracer provider
+// It sets up OTLP HTTP exporter, resource attributes, and trace propagation
+//
+// Parameters:
+//   - ctx: Context for the initialization process
+//
+// Returns:
+//   - *trace.TracerProvider: Configured tracer provider instance
+//   - error: Any error that occurred during initialization
+//
+// The function will:
+// - Get the OTLP traces endpoint from config
+// - Create an OTLP HTTP exporter
+// - Configure resource attributes including service name and debug flag
+// - Create and configure the tracer provider
+// - Set up trace context and baggage propagation
+// - Return nil provider if no endpoint configured
 func InitTracer(ctx context.Context) (*trace.TracerProvider, error) {
 	otlpTracesEndpoint := config.GetString("otel.traces.otlp.endpoint")
 	if otlpTracesEndpoint == "" {

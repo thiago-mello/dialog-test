@@ -15,6 +15,15 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
+// RequireJWTAuth is a middleware function that enforces JWT authentication for protected routes.
+// It performs the following:
+// 1. Extracts the JWT token from the Authorization header
+// 2. Validates the token and extracts user claims
+// 3. Creates an application context with user information
+// 4. Sets OpenTelemetry span attributes for authentication status and user ID
+// Returns an echo.MiddlewareFunc that:
+// - Returns 401 Unauthorized if token is missing or invalid
+// - Calls next handler with ApplicationContext if authentication succeeds
 func RequireJWTAuth() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {

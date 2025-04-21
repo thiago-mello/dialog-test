@@ -33,9 +33,9 @@ func (m *MockPostsDatabase) Update(ctx context.Context, tx *sqlx.Tx, post *domai
 	args := m.Called(ctx, tx, post)
 	return args.Error(0)
 }
-func (m *MockPostsDatabase) ListPosts(ctx context.Context, filters params.GetPostsParams) ([]*projections.ListPostsProjection, error) {
+func (m *MockPostsDatabase) ListPosts(ctx context.Context, filters params.GetPostsParams) (*[]projections.ListPostsProjection, error) {
 	args := m.Called(ctx, filters)
-	return args.Get(0).([]*projections.ListPostsProjection), args.Error(1)
+	return args.Get(0).(*[]projections.ListPostsProjection), args.Error(1)
 }
 func (m *MockPostsDatabase) Delete(ctx context.Context, tx *sqlx.Tx, postID, userID uuid.UUID) error {
 	args := m.Called(ctx, tx, postID, userID)

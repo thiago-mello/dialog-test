@@ -21,6 +21,10 @@ func NewUseCase(db *sqlx.DB) DeletePostUseCase {
 	}
 }
 
+// DeletePost deletes a post from the database based on the provided command
+// It takes a context and DeletePostCommand containing PostID and UserID
+// Returns NotFoundError if no post was found to delete
+// Returns any other errors encountered during deletion
 func (s *DeletePostService) DeletePost(ctx context.Context, command DeletePostCommand) error {
 	err := s.Persistence.Delete(ctx, nil, command.PostID, command.UserID)
 

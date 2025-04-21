@@ -51,6 +51,10 @@ func (a *DeletePostHttpAdapter) Handle(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
+// invalidateCache removes the specified post and related timeline entries from the cache
+// ctx: The echo context containing the request information
+// userID: The ID of the user whose post is being deleted
+// postId: The ID of the post being deleted from the cache
 func (a *DeletePostHttpAdapter) invalidateCache(ctx echo.Context, userID uuid.UUID, postId uuid.UUID) {
 	postKey := fmt.Sprintf("user:%s;post:%s", userID.String(), postId.String())
 	timelinePattern := fmt.Sprintf("user:%s;timeline*", userID.String())

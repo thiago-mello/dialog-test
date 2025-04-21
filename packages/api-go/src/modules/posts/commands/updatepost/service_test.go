@@ -39,7 +39,7 @@ func (m *MockPostsDatabase) Update(ctx context.Context, tx *sqlx.Tx, post *domai
 	return m.Called(ctx, tx, post).Error(0)
 }
 
-func (m *MockPostsDatabase) ListPosts(ctx context.Context, filters params.GetPostsParams) ([]*projections.ListPostsProjection, error) {
+func (m *MockPostsDatabase) ListPosts(ctx context.Context, filters params.GetPostsParams) (*[]projections.ListPostsProjection, error) {
 	return nil, nil
 }
 

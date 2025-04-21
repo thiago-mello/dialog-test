@@ -25,6 +25,19 @@ func NewUseCase(postsDB database.PostsDatabaseOutputPort, likesDB database.Likes
 	}
 }
 
+// LikePost handles the process of liking a post
+// It performs the following steps:
+// 1. Verifies if the post exists in the database
+// 2. Generates a new UUID for the like
+// 3. Creates a new PostLike entity
+// 4. Persists the like in the database
+// Parameters:
+//   - ctx: Context for the operation
+//   - command: Contains PostID and UserID for the like operation
+//
+// Returns:
+//   - error: Returns nil if successful, NotFoundError if post doesn't exist,
+//     or any other error that occurred during the operation
 func (s *LikePostService) LikePost(ctx context.Context, command LikePostCommand) error {
 	post, err := s.postsPersistence.FindByID(ctx, command.PostID)
 	if err != nil {

@@ -22,6 +22,10 @@ func NewUseCase(postsDB database.PostsDatabaseOutputPort, likesDB database.Likes
 	}
 }
 
+// UnlikePost removes a like from a post for a specific user
+// ctx: The context for the operation
+// command: Contains the PostID and UserID for the unlike operation
+// Returns an error if the operation fails, nil on success
 func (s *UnlikePostService) UnlikePost(ctx context.Context, command UnlikePostCommand) error {
 	return s.likesPersistence.UnlikePost(ctx, command.PostID, command.UserID)
 }
