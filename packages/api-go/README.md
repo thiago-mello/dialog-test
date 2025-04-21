@@ -54,7 +54,7 @@ Preencha o `config.yaml` com suas credenciais de banco e Redis e adicione uma st
 3. **Executar Migrações**:
 
    - Certifique-se de que o PostgreSQL está rodando.
-   - Execute o script `db/init.sql` para criar tabelas.
+   - Execute o script [`db/init.sql`](/packages/api-go/db/init.sql) para criar tabelas.
 
 4. **Build e Execução**:
 
@@ -119,7 +119,7 @@ A referência de endpoints (Swagger) pode ser acessada por meio da requisição 
 
 ## 📡 Telemetria Simples
 
-O projeto pode ser configurado para exportar alguns Traces utilizando OpenTelemetry, por meio da configuração de um endpoint OTLP, que pode ser feita através do arquivo `config.yaml`.
+O projeto permite a exportação de traces utilizando o OpenTelemetry. Para isso, basta configurar um endpoint OTLP/HTTP no arquivo `config.yaml`.
 
 ## 📝 Notas Adicionais
 

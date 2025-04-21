@@ -81,7 +81,7 @@ docker compose up
 
 **Observação**: Ao executar o projeto via docker compose, a API do backend não está exposta para acesso fora dos containers, já que todas as interações com ela são feitas pelo servidor do Next.js.
 
-Caso queira acessar a referência de endpoints via Swagger, é necessário alterar o arquivo `docker-compose.yaml` na raiz do projeto da seguinte forma:
+Caso queira acessar a referência de endpoints via Swagger, é necessário adicionar o mapeamento de portas no o arquivo `docker-compose.yaml` na raiz do projeto da seguinte forma:
 
 ```yaml
 backend: # definição de serviço do backend
@@ -102,13 +102,20 @@ backend: # definição de serviço do backend
 - Grafana Tempo (telemetria, somente traces)
 - Grafana (visualização de traces)
 
-O projeto ficará acessoível em `localhost:3000`, e o acesso ao grafana ficará disponíel em `localhost:3001`, com o usuário `admin` e senha `admin`.
+O projeto será executado localmente e poderá ser acessado através da seguinte URL:
 
-Para ver os traces da aplicação pelo Grafana, é necessário configurar um datasource do Tempo, com a URL `http://tempo:3200`.
+- Aplicação: [http://localhost:3000](http://localhost:3000)
+- Painel do Grafana: [http://localhost:3001](http://localhost:3001)
+  - **Usuário:** `admin`
+  - **Senha:** `admin`
+
+**Visualizando os traces da aplicação no Grafana**:
+
+Para visualizar os traces no Grafana, é necessário configurar um **data source** do **Tempo** com a URL `http://tempo:3200`:
 
 ### **Execução Manual**
 
-O projeto da API se encontra dentro da pasta [packages/api-go](/packages/api-go/), e o projeto do frontend se encontra dentro da pasta [packages/frontend-nextjs](/packages/frontend-nextjs/).
+O código da API se encontra na pasta [packages/api-go](/packages/api-go/), e o código do frontend se encontra na pasta [packages/frontend-nextjs](/packages/frontend-nextjs/).
 
 1. **API Go**:
 
@@ -121,7 +128,7 @@ O projeto da API se encontra dentro da pasta [packages/api-go](/packages/api-go/
 
 ⚠️ **Importante**: É necessário ter uma instância do PostgreSQL em execução, com as tabelas definidas no arquivo [init.sql](/packages/api-go/db/init.sql) criadas no schema `public`.
 
-As credenciais de acesso ao PostgreSQL e ao Redis devem ser informadas no arquivo `config.yaml` criado.
+As credenciais de acesso ao PostgreSQL e ao Redis devem ser configuradas no arquivo `config.yaml` criado.
 
 2. **Frontend Next.js**:
    ```bash
@@ -146,10 +153,10 @@ Por padrão, ao executar o projeto pelo Docker Compose conforme definido no arqu
 
 ## 📚 Documentação
 
-- **API**: Acesse `/docs/index.html` em um navegador de internet no endereço da API após iniciá-la para Swagger UI.
+- **API**: Acesse `http://localhost:8080/docs/index.html` em um navegador de internet para acessar a UI do Swagger.
 
-Caso tenha optado por executar o projeto pelo Docker Compose, é necessário realizar os passos descritos [aqui](#via-docker-compose-recomendado) antes de iniciar os containers para ter acesso à referência de endpoints da API.
+Se você optou por executar o projeto com Docker Compose, **certifique-se de seguir os passos descritos [nesta seção](#via-docker-compose-recomendado)** antes de iniciar os containers. Isso é necessário para garantir o acesso à documentação dos endpoints da API.
 
 ## ℹ️ Informações Adicionais
 
-Informações mais detalhadas sobre o Backend e Frontend do projeto podem ser encontradas nos arquivos README dentro das pastas do projeto da [api](/packages/api-go/README.md) e do [frontend](/packages/frontend-nextjs/README.md), incluindo uma visão geral de como os arquivos de cada projeto estão organizados.
+Informações mais detalhadas sobre o Backend e o Frontend do projeto estão disponíveis nos arquivos README localizados nas respectivas pastas: [API](/packages/api-go/README.md) e [Frontend](/packages/frontend-nextjs/README.md). Neles, você encontrará uma visão geral da estrutura dos arquivos de cada parte do projeto, bem como instruções específicas de execução e desenvolvimento.
